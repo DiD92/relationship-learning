@@ -1,10 +1,10 @@
 package org.relationlearn.util.io;
 
-import com.sun.xml.internal.txw2.output.IndentingXMLStreamWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
+import javanet.staxutils.IndentingXMLStreamWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
