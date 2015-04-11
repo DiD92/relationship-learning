@@ -4,7 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -18,4 +17,8 @@ nbproject
 *.xml
 *.mf
 /build/
-/dist/
+/dist/*
+/test_files/*
+
+# Include libraries
+!/dist/lib/
