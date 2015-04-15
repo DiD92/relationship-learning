@@ -7,8 +7,11 @@ import java.util.Stack;
 import org.relationlearn.exception.AlreadyExistingNodeException;
 
 /**
- *
- * @author Dídac
+ * RelationDigraph implementation that stores the ArgumentNode objects in a 
+ * Map.
+ * 
+ * @see RelationDigraph
+ * @see java.util.Map
  */
 public class DigraphImpl implements RelationDigraph {
     
@@ -54,15 +57,34 @@ public class DigraphImpl implements RelationDigraph {
     
     private final Map<Integer, ArgumentNode> nodeTable;
     
+    /**
+     * Constucts a new empty DigraphImpl.
+     */
     public DigraphImpl() {
         this.nodeTable = new HashMap<>();
     }
-
+    
+    /**
+     * Returns the ArgumentNode with id equal to {@code nodeId}.
+     * 
+     * @param nodeId the id of the ArgumentNode to return.
+     * 
+     * @return the ArgumentNode with id {@code nodeId} or null if 
+     * the node can't be found.
+     */
     @Override
     public ArgumentNode getArgumentNode(int nodeId) {
         return this.nodeTable.get(nodeId);
     }
-
+    
+    /**
+     * Adds a new ArgumentNode to this RelationDigraph.
+     * 
+     * @param node the ArgumentNode to add
+     * 
+     * @throws AlreadyExistingNodeException if there's already an
+     * ArgumentNode with the same id as {@code node}
+     */
     @Override
     public void addArgumentNode(ArgumentNode node) 
             throws AlreadyExistingNodeException {
@@ -78,6 +100,12 @@ public class DigraphImpl implements RelationDigraph {
         return this.nodeTable.containsKey(nodeId);
     }
     
+    /** Returns a String representation of this DigraphImpl and its 
+     * content by recursively calling each ArgumentNode toString method.
+     * 
+     * @return a String representation of this DigraphImpl and its internal
+     * content
+     */
     @Override
     public String toString() {
         String str = "";
@@ -86,7 +114,23 @@ public class DigraphImpl implements RelationDigraph {
         }
         return str;
     }
-
+    
+    /**
+     * Returns an Iterator that iterates through the graph's
+     * ArgumentNode objects in postorder.
+     * 
+     * <p>
+     * <b>Note: </b>This iterator expects the graph to contain an 
+     * ArgumentNode with id equal to 1, which is considered the
+     * root node (the only node that doesn't have its target relation
+     * value set).
+     * </p>
+     * 
+     * @return an Iterator that traverses the graph's nodes in postorder
+     * 
+     * @see java.util.Iterator
+     * @see java.lang.Iterable
+     */
     @Override
     public Iterator<ArgumentNode> iterator() {
         return new PostorderTreeIterator();

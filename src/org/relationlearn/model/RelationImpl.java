@@ -3,8 +3,9 @@ package org.relationlearn.model;
 import org.relationlearn.util.RelationType;
 
 /**
- *
- * @author Dídac
+ * An ArgumentRelation implementation.
+ * 
+ * @see ArgumentRelation
  */
 public class RelationImpl implements ArgumentRelation {
     
@@ -15,10 +16,31 @@ public class RelationImpl implements ArgumentRelation {
     
     private RelationImpl() {}
     
+    /**
+     * Constructs a new RelationImpl with id {@code rID}, origin node
+     * {@code aNd}, destination node {@code tNd} and RelationType set to
+     * {@code RelationType.UNKNOWN}.
+     * 
+     * @param rID identifier of this RelationImpl
+     * @param aNd origin node of this RelationImpl
+     * @param tNd destination node of this RelationImpl
+     */
     public RelationImpl(int rID, ArgumentNode aNd, ArgumentNode tNd) {
         this(rID, aNd, tNd, RelationType.UNKNOWN);
     }
     
+    /**
+     * Constructs a new RelationImpl with id {@code rID}, origin node
+     * {@code aNd}, destination node {@code tNd} and RelationType
+     * {@code rT}.
+     * 
+     * @param rID identifier of this RelationImpl
+     * @param aNd origin node of this RelationImpl
+     * @param tNd destination node of this RelationImpl
+     * @param rT type of this RelationImpl
+     * 
+     * @see org.relationlearn.util.RelationType
+     */
     public RelationImpl(int rID, ArgumentNode aNd, ArgumentNode tNd, 
             RelationType rT) {
         this.relationID = rID;

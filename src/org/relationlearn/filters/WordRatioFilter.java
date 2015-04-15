@@ -4,17 +4,27 @@ import org.relationlearn.util.TextUtils;
 import weka.core.Attribute;
 
 /**
- *
- * @author Dídac
+ * An implementation of TextFilter which returns the division between
+ * the number of words in the hypothesis text and the response text.
  */
 public class WordRatioFilter implements TextFilter {
     
     private final Attribute FILTER_ATTR;
     
+    /**
+     * Constructs a WordRatioFilter with the Attribute name
+     * "word-ratio".
+     */
     public WordRatioFilter() {
         this("word-ratio");
     }
     
+    /**
+     * Constructs a WordRatioFilter with the Attribute name
+     * {@code name}.
+     * 
+     * @param name 
+     */
     public WordRatioFilter(String name) {
         this.FILTER_ATTR = new Attribute(name);
     }

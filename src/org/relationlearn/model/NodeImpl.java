@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * @author Dídac
+ * ArgumentNode implementation that uses a Map to store its reply
+ * ArgumentRelations.
+ * 
+ * @see ArgumentNode
  */
 public class NodeImpl implements ArgumentNode {
     
@@ -23,6 +25,14 @@ public class NodeImpl implements ArgumentNode {
         this.repliesTable = new HashMap<>();
     }
     
+    /**
+     * Construct a new NodeImpl with id {@code nId}, weight {@code nW} and
+     * node text {@code text}.
+     * 
+     * @param nID identifier of this NodeImpl
+     * @param nW weight of this NodeImpl
+     * @param text complete text of this NodeImpl
+     */
     public NodeImpl(int nID, int nW, String text) {
         this();
         this.nodeID = nID;
@@ -72,6 +82,12 @@ public class NodeImpl implements ArgumentNode {
         return this.nodeText;
     }
     
+    /** 
+     * Returns a String representation of this NodeImpl and its
+     * contents.
+     * 
+     * @return a String representation of this NodeImpl and its contents
+     */
     @Override
     public String toString() {
         String str = "";

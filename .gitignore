@@ -17,6 +17,7 @@ nbproject
 *.xml
 *.mf
 /build/
+/lib/
 /dist/*
 /test_files/*
 

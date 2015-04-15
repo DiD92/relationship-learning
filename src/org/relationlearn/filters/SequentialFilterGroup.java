@@ -7,8 +7,12 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 /**
- *
- * @author Dídac
+ * Implementation of FilterGroup which applies the TextFilter objects 
+ * to the input in the same order they were added to group and in a 
+ * sequential manner.
+ * 
+ * @see FilterGroup
+ * @see TextFilter
  */
 public class SequentialFilterGroup implements FilterGroup {
     
@@ -20,10 +24,20 @@ public class SequentialFilterGroup implements FilterGroup {
     
     private boolean changedFilter;
     
+    /** 
+     * Constructs a SequentialFilterGroup with the 
+     * dataset name "test-dataset".
+     */
     public SequentialFilterGroup() {
         this("test-dataset");
     }
     
+    /**
+     * Constructs a SequentialFilterGroup with the dataset name
+     * {@code dataset}.
+     * 
+     * @param dataset the name of this SequentialFilterGroup dataset.
+     */
     public SequentialFilterGroup(String dataset) {
         this.GROUP_DATASET = dataset;
         this.FILTER_ATTRS = new FastVector();
