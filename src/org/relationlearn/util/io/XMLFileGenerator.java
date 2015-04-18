@@ -13,8 +13,11 @@ import org.relationlearn.model.ArgumentRelation;
 import org.relationlearn.model.RelationDigraph;
 
 /**
- *
- * @author Dídac
+ * OutputGenerator implementation which generates a file in the
+ * <a href="http://www-sop.inria.fr/NoDE/NoDE-xml.html">NoDE</a> format, using
+ * an XML stream writer.
+ * 
+ * @see OutputGenerator
  */
 public class XMLFileGenerator implements OutputGenerator {
     
@@ -111,6 +114,14 @@ public class XMLFileGenerator implements OutputGenerator {
         }
     }
     
+    /**
+     * Generates an XML file with the data provided by {@code table} in the 
+     * output path {@code path}
+     * 
+     * @param table the Map containing the data to be used in the
+     * output generation
+     * @param path the path were the output data will be written 
+     */
     @Override
     public void generateOutput(Map<String, RelationDigraph> table, 
             String path) {

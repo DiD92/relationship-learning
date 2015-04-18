@@ -20,8 +20,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- *
- * @author Dídac
+ * InputParser implementation that parser and XML file written in the
+ * <a href="http://www-sop.inria.fr/NoDE/NoDE-xml.html">NoDE</a> format, using
+ * a SAX based parser.
+ * 
+ * @see InputParser
+ * @see javax.xml.parsers.SAXParser
  */
 public class XMLFileParser implements InputParser {
     
@@ -203,6 +207,16 @@ public class XMLFileParser implements InputParser {
         }
     }
     
+    /**
+     * Parses a given XML file and returns a Map containing all RelationDigraph
+     * objects found in it.
+     * 
+     * @param uri the path of the XML file to parse
+     * @return a Map with all RelationDigraph objects parsed from the file
+     * 
+     * @throws IllegalArgumentException if the path doesn't correspond to a 
+     * valid XML file.
+     */
     @Override
     public Map<String, RelationDigraph> parseInput(String uri) {
         File input = new File(uri);

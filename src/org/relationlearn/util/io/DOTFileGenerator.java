@@ -17,8 +17,12 @@ import org.relationlearn.model.RelationDigraph;
 import org.relationlearn.util.RelationType;
 
 /**
- *
- * @author Dídac
+ * OutputGenerator implementation which generates a group of files in the
+ * <a href="http://en.wikipedia.org/wiki/DOT_%28graph_description_language%29">
+ * DOT language</a> format for graph representation using tools 
+ * such as <a href="http://www.graphviz.org/">GraphViz</a>.
+ * 
+ * @see OutputGenerator
  */
 public class DOTFileGenerator implements OutputGenerator {
     
@@ -66,12 +70,30 @@ public class DOTFileGenerator implements OutputGenerator {
             return REL_TYPE;
         }
     }
-
+    
+    /**
+     * Generates a group of .dot files taking as base path the
+     * parameter {@code basePath}.
+     * 
+     * <p>
+     * <b>Notes on basePath parameter:</b> Take for example the input path:<br/>
+     * {@code /home/output}</br/>Then if the parameter {@code graphTable} 
+     * contains a graph called {@code graph1} and another one called 
+     * {@code graph2} the results after the method call would generate two 
+     * files called:<br/> {@code /home/output_graph1.dot} and 
+     * {@code /home/output_graph2.dot} <br/> which would contain the 
+     * information found in each RelationDigraph object respectively.
+     * 
+     * @param graphTable the Map containing the data to be used in the
+     * output generation
+     * @param basePath the base path were the output files will be
+     * generated
+     */
     @Override
-    public void generateOutput(Map<String, RelationDigraph> graph_table, 
-            String base_path) {
-        for(Entry<String, RelationDigraph> de : graph_table.entrySet()) {
-            String file_path = base_path + "_" + de.getKey() + ".dot";
+    public void generateOutput(Map<String, RelationDigraph> graphTable, 
+            String basePath) {
+        for(Entry<String, RelationDigraph> de : graphTable.entrySet()) {
+            String file_path = basePath + "_" + de.getKey() + ".dot";
             generateDOTFile(de.getValue(), file_path);
         }
     }
