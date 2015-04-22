@@ -61,7 +61,7 @@ classification, for now it contains a single class which should be used as is,
 but you can always use the facilities provided by the Weka library for your 
 training classification if you are uncomfortable with this implementation.
 ## Exception
-Package: [org.relationlearn.exception](../master/src/org/relationlearn/classifiers)
+Package: [org.relationlearn.exception](../master/src/org/relationlearn/exception)
 
 In this package you will find wrapper classes for the Exception class which are 
 basically used to provide the user with a more clear reason of failure, in case 
