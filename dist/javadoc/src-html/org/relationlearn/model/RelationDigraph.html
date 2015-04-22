@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="es">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package org.relationlearn.model;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import org.relationlearn.exception.AlreadyExistingNodeException;<a name="line.3"></a>
+<span class="sourceLineNo">004</span><a name="line.4"></a>
+<span class="sourceLineNo">005</span>/**<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * The RelationDigraph interface represents a directed weighted graph used to<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * store all arguments in the form of ArgumentNode objects and the relations<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * between those nodes in the form of ArgumentRelation objects.<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * <a name="line.9"></a>
+<span class="sourceLineNo">010</span> * @see ArgumentNode<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * @see ArgumentRelation<a name="line.11"></a>
+<span class="sourceLineNo">012</span> */<a name="line.12"></a>
+<span class="sourceLineNo">013</span>public interface RelationDigraph extends Iterable&lt;ArgumentNode&gt; {<a name="line.13"></a>
+<span class="sourceLineNo">014</span><a name="line.14"></a>
+<span class="sourceLineNo">015</span>    /**<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     * Returns the ArgumentNode with id equal to {@code nodeId}, this<a name="line.16"></a>
+<span class="sourceLineNo">017</span>     * method is expected to return null if there's no such ArgumentNode.<a name="line.17"></a>
+<span class="sourceLineNo">018</span>     * <a name="line.18"></a>
+<span class="sourceLineNo">019</span>     * @param nodeId the id of the ArgumentNode to return.<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     * <a name="line.20"></a>
+<span class="sourceLineNo">021</span>     * @return the ArgumentNode with id {@code nodeId} or null if <a name="line.21"></a>
+<span class="sourceLineNo">022</span>     * the node can't be found.<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     */<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    public ArgumentNode getArgumentNode(int nodeId);<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    <a name="line.25"></a>
+<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * Adds a new ArgumentNode to this RelationDigraph.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * <a name="line.28"></a>
+<span class="sourceLineNo">029</span>     * &lt;p&gt;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     * &lt;b&gt;Note:&lt;/b&gt; Conditions for this method exception throw are<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * implementation dependent and should be specified in <a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * their corresponding javadoc page.<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * &lt;/p&gt;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * <a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * @param node the ArgumentNode to add<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * <a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * @throws AlreadyExistingNodeException<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     */<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    public void addArgumentNode(ArgumentNode node) <a name="line.39"></a>
+<span class="sourceLineNo">040</span>            throws AlreadyExistingNodeException;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    <a name="line.41"></a>
+<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * Checks if this RelationDigraph has a node stored with the<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * id equal to {@code nodeId}.<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * <a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * @param nodeId the id of the ArgumentNode to look for existence in the<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * RelationDigraph object.<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * <a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * @return true if there's a node with id equal to {@code nodeId}, <a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * false otherwise.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public boolean containsNode(int nodeId);<a name="line.52"></a>
+<span class="sourceLineNo">053</span>}<a name="line.53"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
