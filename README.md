@@ -81,12 +81,14 @@ case of user implementations of those interfaces.
 ```Java
 // We create and XML parser and get a Map of digraphs
 InputParser parser = new XMLFileParser();
-Map<String, RelationDigraph> in_digraphs = parser.parse("your_xml_file.xml");
+Map<String, RelationDigraph> in_digraphs = parser.parseInput("your_xml_file.xml");
 // We get the digraph form which we want to train a classifier
 RelationDigraph digraph = in_digraphs.get("digrahp_name");
 // We instantiate a FilterGroup and an InstanceGenerator to get the 
 // attributes we want from the digraph relations
 FilterGroup filter =  new SequentialFilterGroup("digraph_name");
+// Setting class Attribute to default value
+filter.addClassAttribute(null);
 // Adding filters to the filter group
 filter.addFilter(new WordRatioFilter("word-ratio"));
 // ...
@@ -104,13 +106,15 @@ svm.storeModel("digraph_classifier.model");
 ```Java
 // We create again and XML parser and get a Map of digraphs
 InputParser parser = new XMLFileParser();
-Map<String, RelationDigraph> in_digraphs = parser.parse("another_xml_file.xml");
+Map<String, RelationDigraph> in_digraphs = parser.parseInput("another_xml_file.xml");
 // We get the digraph form which we want to classify its relations
 // with an already trained classifier
 RelationDigraph digraph = in_digraphs.get("digrahp_name");
 // We instantiate a FilterGroup and an InstanceGenerator to get the 
 // attributes we want from the digraph relations
 FilterGroup filter =  new SequentialFilterGroup("digraph_name");
+// Setting class Attribute to default value
+filter.addClassAttribute(null);
 // Adding filters to the filter group
 filter.addFilter(new WordRatioFilter("word-ratio"));
 // ...

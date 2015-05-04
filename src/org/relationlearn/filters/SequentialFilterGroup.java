@@ -15,9 +15,11 @@ import java.util.PriorityQueue;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.relationlearn.util.RelationClass;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -124,7 +126,7 @@ public class SequentialFilterGroup implements FilterGroup {
         private String currentClass;
         
         public SAXParserHelper() {
-            this.ITEM_QUEUE = new PriorityQueue(11, new ItemComparator());
+            this.ITEM_QUEUE = new PriorityQueue<>(11, new ItemComparator());
             this.PARSED_FILTERS = new LinkedList<>();
         }
         
@@ -241,6 +243,8 @@ public class SequentialFilterGroup implements FilterGroup {
     private final FastVector FILTER_ATTRS;
     private final List<TextFilter> FILTERS;
     
+    private Attribute classAttr;
+    
     private Instances filterDataset;
     
     private boolean changedFilter;
@@ -287,6 +291,12 @@ public class SequentialFilterGroup implements FilterGroup {
     public String getGroupDatasetName() {
         return GROUP_DATASET;
     }
+    
+    @Override
+    public Instances getGroupDataset() {
+        buildInstances();
+        return new Instances(filterDataset); 
+    }
 
     @Override
     public FastVector getGroupAttributes() {
@@ -296,7 +306,7 @@ public class SequentialFilterGroup implements FilterGroup {
     @Override
     public Instance createInstanceUsingFilters(String r, String h) {
         buildInstances();
-        Instance instance = new Instance(FILTER_ATTRS.size());
+        Instance instance = new Instance(filterDataset.numAttributes());
         for(TextFilter filter : FILTERS) {
             instance.setValue(filter.getMappedAttribute(), 
                     filter.filter(r, h));
@@ -312,9 +322,29 @@ public class SequentialFilterGroup implements FilterGroup {
         FILTERS.add(filter);
     }
     
+    /**
+     * Adds the Attribute {@code attr} as the Instances class attribute
+     * or sets the Instances class value to 
+     * {@link org.relationlearn.util.RelationClass#DEFAULT_CLASS}.
+     * 
+     * @param attr the Attribute to be used as class attribute or null
+     */
+    @Override
+    public void addClassAttribute(Attribute attr) {
+        if(attr == null) {
+            this.classAttr = RelationClass.DEFAULT_CLASS;
+        } else {
+            this.classAttr = attr;
+        }
+    }
+    
     private void buildInstances() {
         if(changedFilter) {
-            filterDataset = new Instances(GROUP_DATASET, FILTER_ATTRS, 0);
+            FastVector completeAttr = new FastVector(FILTER_ATTRS.size() + 1);
+            completeAttr.appendElements(FILTER_ATTRS);
+            completeAttr.addElement(classAttr);
+            filterDataset = new Instances(GROUP_DATASET, completeAttr, 0);
+            filterDataset.setClassIndex(completeAttr.size() - 1);
             changedFilter = false;
         }
     }

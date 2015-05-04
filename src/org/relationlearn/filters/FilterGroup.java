@@ -1,7 +1,9 @@
 package org.relationlearn.filters;
 
+import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * The FilterGroup interface defines a container for an undefined amount of
@@ -20,6 +22,13 @@ public interface FilterGroup {
      * @return the dataset name of this FilterGroup
      */
     public String getGroupDatasetName();
+    
+    /**
+     * Returns the current dataset for this FilterGroup.
+     * 
+     * @return the dataset for this FilterGroup
+     */
+    public Instances getGroupDataset();
     
     /**
      * Returns a FastVector instance containing all the Attribute elements
@@ -54,5 +63,13 @@ public interface FilterGroup {
      * @see TextFilter
      */
     public void addFilter(TextFilter filter);
+    
+    /**
+     * Adds the Attribute that corresponds to the class of this FilterGroup
+     * generated Instances
+     * 
+     * @param attr the weka Attribute that will be the class of the Instances
+     */
+    public void addClassAttribute(Attribute attr);
 
 }

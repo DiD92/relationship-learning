@@ -24,3 +24,6 @@ nbproject
 # Include libraries
 !/dist/lib/
 !/dist/javadoc/
+
+# Model Files
+*.model

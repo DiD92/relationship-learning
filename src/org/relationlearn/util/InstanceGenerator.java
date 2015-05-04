@@ -4,6 +4,7 @@ import org.relationlearn.filters.FilterGroup;
 import org.relationlearn.model.ArgumentNode;
 import org.relationlearn.model.ArgumentRelation;
 import org.relationlearn.model.RelationDigraph;
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -45,13 +46,14 @@ public class InstanceGenerator {
      * @see weka.core.Instances
      */
     public Instances getGraphInstances() {
-        Instances ins = new Instances(FILTER.getGroupDatasetName(), 
-                FILTER.getGroupAttributes(), 0);
+        Instances ins = FILTER.getGroupDataset();
+        Attribute classAttr = ins.classAttribute();
         for(ArgumentNode an : GRAPH) {
             ArgumentRelation relation = an.getTargetRelation();
             if(relation != null) {
                 Instance in = generateInstace(an.getArgumentNodeText(), 
                         relation.getTarget().getArgumentNodeText());
+                in.setClassValue(relation.getArgumentRelationType().toString());
                 ins.add(in);
             }
         }
