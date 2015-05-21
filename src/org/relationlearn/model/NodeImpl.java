@@ -54,7 +54,15 @@ public class NodeImpl implements ArgumentNode {
     public void addTargetRelation(ArgumentRelation aRel) {
         this.targetRelation = aRel;
     }
-
+    
+    /**
+     * Returns the ArgumentRelation in which this node is the origin.
+     * 
+     * @return the ArgumentRelation that has its source in this
+     * ArgumentNode object or null if there is no such ArgumentRelation
+     * 
+     * @see ArgumentRelation
+     */
     @Override
     public ArgumentRelation getTargetRelation() {
         return this.targetRelation;

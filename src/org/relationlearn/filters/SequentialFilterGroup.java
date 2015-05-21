@@ -204,7 +204,7 @@ public class SequentialFilterGroup implements FilterGroup {
                 }
             } else {
                 throw new SAXException("Error: filter tag is missing "
-                        + "one or more necessary attributes!");
+                        + "one or more mandatory attributes!");
             }
         }
         

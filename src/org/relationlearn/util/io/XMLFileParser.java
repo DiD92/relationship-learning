@@ -54,6 +54,7 @@ public class XMLFileParser implements InputParser {
     
     private static class SAXParserHelper extends DefaultHandler {
         
+        private final String ENTL_TAG = "entailment-corpus";
         private final String PAIR_TAG = "pair";
         private final String TARGET_TAG = "h";
         private final String RESPONSE_TAG = "t";
@@ -88,38 +89,51 @@ public class XMLFileParser implements InputParser {
         @Override
         public void startElement(String uri, String localName, String qName, 
                 Attributes attributes) throws SAXException {
-            
-            if(PAIR_TAG.equals(qName)) {
-                currentGraph = attributes.getValue(TOPIC_ATTR);
-                if(!relGraph.containsKey(currentGraph)) {
-                    relGraph.put(currentGraph, new DigraphImpl());
-                }
-                parseRelation(attributes);
-            }
-        
-            if(TARGET_TAG.equals(qName)) {
-                int nId = Integer.parseInt(attributes.getValue(ID_ATTR));
-                if(relGraph.get(currentGraph).containsNode(nId)) {
-                    buildTarget = false;
-                    currentRelation.tNode = 
-                            relGraph.get(currentGraph).getArgumentNode(nId);
-                } else {
-                    buildTarget = true;
-                    currentTarget = new NodeBuilder();
-                    parseNode(attributes, currentTarget);
-                }
-            }
-        
-            if(RESPONSE_TAG.equals(qName)) {
-                int nId = Integer.parseInt(attributes.getValue(ID_ATTR));
-                if(relGraph.get(currentGraph).containsNode(nId)) {
-                    buildArgumentator = false;
-                    currentRelation.aNode = 
-                            relGraph.get(currentGraph).getArgumentNode(nId);
-                } else {
-                    buildArgumentator = true;
-                    currentArgumentator = new NodeBuilder();
-                    parseNode(attributes, currentArgumentator);
+            String strId = attributes.getValue(ID_ATTR);
+            int nId;
+            if(!ENTL_TAG.equals(qName) && (strId != null)) switch(qName) {
+                case PAIR_TAG:
+                    currentGraph = attributes.getValue(TOPIC_ATTR);
+                    if(currentGraph != null) {
+                        if(!relGraph.containsKey(currentGraph)) {
+                            relGraph.put(currentGraph, new DigraphImpl());
+                        }
+                        parseRelation(attributes);
+                    } else {
+                        throw new SAXException("topic attribute is mandatory "
+                                + "for the pair tag");
+                    }
+                    break;
+                case TARGET_TAG:
+                    nId = Integer.parseInt(strId);
+                    if(relGraph.get(currentGraph).containsNode(nId)) {
+                        buildTarget = false;
+                        currentRelation.tNode = 
+                                relGraph.get(currentGraph).getArgumentNode(nId);
+                    } else {
+                        buildTarget = true;
+                        currentTarget = new NodeBuilder();
+                        parseNode(attributes, currentTarget);
+                    }
+                    break;
+                case RESPONSE_TAG:
+                    nId = Integer.parseInt(strId);
+                    if(relGraph.get(currentGraph).containsNode(nId)) {
+                        buildArgumentator = false;
+                        currentRelation.aNode = 
+                                relGraph.get(currentGraph).getArgumentNode(nId);
+                    } else {
+                        buildArgumentator = true;
+                        currentArgumentator = new NodeBuilder();
+                        parseNode(attributes, currentArgumentator);
+                    }
+                    break;
+                default: // Other XML tags are ignored
+                    break;
+            } else {
+                if(!ENTL_TAG.equals(qName)) {
+                    throw new SAXException("id attribute is mandatory for "
+                        + "the pair, t and h tags");
                 }
             }
         }
@@ -131,46 +145,48 @@ public class XMLFileParser implements InputParser {
         
         @Override
         public void endElement(String uri, String localName, String qName) {
-            if(PAIR_TAG.equals(qName)) {
-                ArgumentRelation ar;
-                ArgumentNode argumentator;
-                ArgumentNode target;
-                RelationDigraph graph = relGraph.get(currentGraph);
-                try {
-                    if(buildArgumentator) {
-                        argumentator = currentArgumentator.build();
-                        graph.addArgumentNode(argumentator);
-                        currentRelation.aNode = argumentator;
-                    } else {
-                        argumentator = currentRelation.aNode;
+            switch(qName) {
+                case PAIR_TAG:
+                    ArgumentRelation ar;
+                    ArgumentNode argumentator;
+                    ArgumentNode target;
+                    RelationDigraph graph = relGraph.get(currentGraph);
+                    try {
+                        if(buildArgumentator) {
+                            argumentator = currentArgumentator.build();
+                            graph.addArgumentNode(argumentator);
+                            currentRelation.aNode = argumentator;
+                        } else {
+                            argumentator = currentRelation.aNode;
+                        }
+                        if(buildTarget) {
+                            target = currentTarget.build();
+                            graph.addArgumentNode(target);
+                            currentRelation.tNode = target;
+                        } else {
+                            target = currentRelation.tNode;
+                        }
+                        ar = currentRelation.build();
+                        argumentator.addTargetRelation(ar);
+                        target.addReplyRelation(ar);
+                    } catch (AlreadyExistingNodeException aenex) {
+                        System.err.println("Error already existing node");
                     }
+                    currentRelation = null;
+                    currentArgumentator = currentTarget = null;
+                    break;
+                case TARGET_TAG:
                     if(buildTarget) {
-                        target = currentTarget.build();
-                        graph.addArgumentNode(target);
-                        currentRelation.tNode = target;
-                    } else {
-                        target = currentRelation.tNode;
+                        currentTarget.nodeText = tempString;
                     }
-                    ar = currentRelation.build();
-                    argumentator.addTargetRelation(ar);
-                    target.addReplyRelation(ar);
-                } catch (AlreadyExistingNodeException aenex) {
-                    System.err.println("Error already existing node");
-                }
-                currentRelation = null;
-                currentArgumentator = currentTarget = null;
-            }
-            
-            if(TARGET_TAG.equals(qName)) {
-                if(buildTarget) {
-                    currentTarget.nodeText = tempString;
-                }
-            }
-            
-            if(RESPONSE_TAG.equals(qName)) {
-                if(buildArgumentator) {
-                    currentArgumentator.nodeText = tempString;
-                }
+                    break;
+                case RESPONSE_TAG:
+                    if(buildArgumentator) {
+                        currentArgumentator.nodeText = tempString;
+                    }
+                    break;
+                default: // Other XML tags are ignored
+                    break;
             }
         }
         
@@ -193,6 +209,8 @@ public class XMLFileParser implements InputParser {
                 default:
                     currentRelation.relType = RelationType.UNKNOWN;
                     break;
+            } else {
+                currentRelation.relType = RelationType.UNKNOWN;
             }
         }
         
