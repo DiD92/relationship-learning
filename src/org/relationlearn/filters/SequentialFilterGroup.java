@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,15 +41,18 @@ import weka.core.Instances;
  * {@code
  * <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
  * <filters>
- *     <filter id="1" name="filter_name" local="yes" relative="no" 
+ *     <filter id="1" local="yes" relative="no" 
  *         classpath="file:/C:/your/absolute/path/here">
  *     class.fully.qualified.name
  *     </filter>
- *     <filter id="4" name="filter_name" local="yes" relative="yes" 
+ *     <filter id="4" local="yes" relative="yes" 
  *         classpath="your/relative/path/here">
  *      class.fully.qualified.name
+ *      <filter_params>
+ *          <param>your_param_value_here</param>
+ *      <filter_params>
  *     </filter>
- *     <filter id="3" name="filter_name" local="no" classpath="your_url_here">
+ *     <filter id="3" local="no" classpath="your_url_here">
  *      class.fully.qualified.name
  *     </filter>
  * </filters>
@@ -71,6 +75,20 @@ import weka.core.Instances;
  * {@link java.lang.Integer#MAX_VALUE} the value with less priority. Although
  * its recommended that you begin identifying your filters with the value 1 
  * for the first, 2 for the second and so on.
+ * </p>
+ * <p>
+ * Additionally if the TextFilter you want to load accepts additional parameters
+ * , you can supply them inside the {@code filter_params} tag as shown in the
+ * example with {@code id=4}.
+ * </p>
+ * <p>
+ * <b>Important Note:</b> Keep in mind that the only parameters you can 
+ * supply to the TextFilter using a config file will be of type 
+ * {@link java.lang.String} so build your TextFilter with that in mind. 
+ * For example you could provide a constructor that accepts a 
+ * {@link java.util.List} and the implement another
+ * one which accepts as paramter the path to that same list serialized in a 
+ * file for its use with this configuration file.
  * </p>
  * 
  * @see java.net.URLClassLoader
@@ -106,8 +124,11 @@ public class SequentialFilterGroup implements FilterGroup {
     private class SAXParserHelper extends DefaultHandler {
         
         private final String FILTER_TAG = "filter";
+        private final String FLTPR_TAG = "filter_params";
+        private final String PARAM_TAG = "param";
         
         private final String ID_ATTR = "id";
+        private final String TYPE_ATTR = "type";
         private final String NAME_ATTR = "name";
         private final String LOCAL_ATTR = "local";
         private final String RELATIVE_ATTR = "relative";
@@ -120,37 +141,55 @@ public class SequentialFilterGroup implements FilterGroup {
         private final List<TextFilter> PARSED_FILTERS;
         
         private int filterOrder;
-        private String filterName;
         private String classPath;
         
         private String currentClass;
+        private String currentValue;
+        
+        private final List<String> filterParams;
         
         public SAXParserHelper() {
             this.ITEM_QUEUE = new PriorityQueue<>(11, new ItemComparator());
             this.PARSED_FILTERS = new LinkedList<>();
+            this.filterParams = new ArrayList<>();
         }
         
         @Override
         public void startElement(String uri, String localName, String qName, 
                 Attributes attributes) throws SAXException {
             
-            if(FILTER_TAG.equals(qName)) {
-                parseFilterAttributes(attributes);
+            switch (qName) {
+                case FILTER_TAG:
+                    parseFilterAttributes(attributes);
+                    break;
+                case FLTPR_TAG:
+                    currentClass = currentValue;
+                    filterParams.clear();
+                    break;
+                default:
+                    break;
             }
         }
         
         @Override
         public void characters(char[] ac, int i, int j) {
-            currentClass = new String(ac, i, j).trim();
+            currentValue = new String(ac, i, j).trim();
         }
         
         @Override
         public void endElement(String uri, String localName, String qName) 
                 throws SAXException {
-            if(FILTER_TAG.equals(qName)) {
-                TextFilter filter = tryLoadFilter(classPath);
-                FilterItem item = new FilterItem(filter, filterOrder);
-                ITEM_QUEUE.add(item);
+            switch (qName) {
+                case FILTER_TAG:
+                    TextFilter filter = tryLoadFilter(classPath, filterParams);
+                    FilterItem item = new FilterItem(filter, filterOrder);
+                    ITEM_QUEUE.add(item);
+                    break;
+                case PARAM_TAG:
+                    filterParams.add(currentValue);
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -171,10 +210,8 @@ public class SequentialFilterGroup implements FilterGroup {
             local = attr.getValue(LOCAL_ATTR);
             relative = attr.getValue(RELATIVE_ATTR);
             classpath = attr.getValue(CLASSPATH_ATTR);
-            if((id != null) && (name != null) && (local != null) && 
-                    (classpath != null)) {
+            if((id != null) && (local != null) && (classpath != null)) {
                 filterOrder = Integer.valueOf(id);
-                filterName = name;
                 switch(local) {
                     case VALUE_YES:
                         if(null != relative) {
@@ -215,16 +252,29 @@ public class SequentialFilterGroup implements FilterGroup {
             return absPath;
         }
         
-        private TextFilter tryLoadFilter(String path) throws SAXException {
+        private TextFilter tryLoadFilter(String path, List<String> params) 
+                throws SAXException {
             TextFilter tf = null;
+            Class[] paramTypes;
+            String[] paramValues;
             try {
                 URL[] urls = { new URL(path) };
                 URLClassLoader ucl = new URLClassLoader(urls);
                 Class<TextFilter> c;
                 c = (Class<TextFilter>) ucl.loadClass(currentClass)
                         .asSubclass(TextFilter.class);
-                Constructor<TextFilter> con = c.getConstructor(String.class);
-                tf = con.newInstance(filterName);
+                Constructor<TextFilter> con;
+                if(params.size() > 0) {
+                    paramTypes = new Class[params.size()];
+                    Arrays.fill(paramTypes, String.class);
+                    paramValues = new String[params.size()];
+                    paramValues = params.toArray(paramValues);
+                    con = c.getConstructor(paramTypes);
+                    tf = con.newInstance((Object[]) paramValues); 
+                } else {
+                    con = c.getConstructor();
+                    tf = con.newInstance();
+                }
                 ucl.close();
             } catch (MalformedURLException muex) {
                 throw new SAXException("Error: path doesn't correspond to a "

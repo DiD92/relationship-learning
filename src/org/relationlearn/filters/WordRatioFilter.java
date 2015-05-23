@@ -12,8 +12,8 @@ public class WordRatioFilter implements TextFilter {
     private final Attribute FILTER_ATTR;
     
     /**
-     * Constructs a WordRatioFilter with the Attribute name
-     * "word-ratio".
+     * Constructs a WordRatioFilter with the Attribute name set
+     * to "word-ratio".
      */
     public WordRatioFilter() {
         this("word-ratio");
@@ -23,7 +23,7 @@ public class WordRatioFilter implements TextFilter {
      * Constructs a WordRatioFilter with the Attribute name
      * {@code name}.
      * 
-     * @param name 
+     * @param name the name this TextFilter Attribute will have
      */
     public WordRatioFilter(String name) {
         this.FILTER_ATTR = new Attribute(name);
