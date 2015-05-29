@@ -19,6 +19,8 @@ public class DigraphImpl implements RelationDigraph {
     
     private class PostorderTreeIterator implements Iterator<ArgumentNode> {
         
+        private ArgumentNode origin;
+        
         public PostorderTreeIterator() {
             treeStack = new Stack<>();
             if(DigraphImpl.this.nodeTable.size() > 0) {
@@ -43,19 +45,39 @@ public class DigraphImpl implements RelationDigraph {
         
         private void fillStack() {
             Stack<ArgumentNode> visitStack = new Stack<>();
-            visitStack.push(DigraphImpl.this.getArgumentNode(1)); //HARDCODED
-            while(!visitStack.empty()) {
-                ArgumentNode node = visitStack.pop();
-                treeStack.push(node);
-                for(ArgumentRelation rel : node.getReplyRelations()) {
-                    visitStack.push(rel.getArgumentator());
+            ArgumentNode start = getOrigin();
+            origin = start;
+            graphChanged = false;
+            if(start != null) {
+                visitStack.push(start);
+                while(!visitStack.empty()) {
+                    ArgumentNode node = visitStack.pop();
+                    treeStack.push(node);
+                    for(ArgumentRelation rel : node.getReplyRelations()) {
+                        visitStack.push(rel.getArgumentator());
+                    }
                 }
+            }
+        }
+        
+        private ArgumentNode getOrigin() {
+            if(graphChanged) {
+                for(ArgumentNode node : nodeTable.values()) {
+                    if(node.getTargetRelation() == null) {
+                        return node;
+                    }
+                }
+                return null;
+            } else {
+                return origin;
             }
         }
         
     }
     
     private final Map<Integer, ArgumentNode> nodeTable;
+    
+    private boolean graphChanged;
     
     /**
      * Constucts a new empty DigraphImpl.
@@ -91,6 +113,7 @@ public class DigraphImpl implements RelationDigraph {
         if(nodeTable.containsKey(node.getNodeId())) {
             throw new AlreadyExistingNodeException();
         } else {
+            graphChanged = true;
             nodeTable.put(node.getNodeId(), node);
         }
     }
