@@ -132,5 +132,5 @@ for(int i = 0; i < instances.numInstances(); i++) {
 ```
 # Additional notes
 If you have any doubts about the specifics of an element in the library you can 
-always check the provided [Javadoc](../master/dist/javadoc/index.html) for all 
+always check the provided [Javadoc](http://did92.github.io/relationship-learning/dist/javadoc/index.html) for all 
 the interfaces and classes found in this repository.
