@@ -18,12 +18,9 @@ nbproject
 *.mf
 /build/
 /lib/
-/dist/*
-/test_files/*
-
-# Include libraries
-!/dist/lib/
-!/dist/javadoc/
+/dist/
+/test_files/
+/src/org/relationlearn/test/
 
 # Model Files
 *.model
