@@ -20,10 +20,7 @@ nbproject
 /lib/
 /dist/*
 /test_files/*
-
-# Include libraries
-!/dist/lib/
-!/dist/javadoc/
+/src/org/relationlearn/test/*
 
 # Model Files
 *.model
