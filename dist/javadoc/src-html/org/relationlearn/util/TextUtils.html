@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="es">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package org.relationlearn.util;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import com.aliasi.tokenizer.RegExTokenizerFactory;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.aliasi.tokenizer.TokenizerFactory;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.regex.Pattern;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * Utility class used to manipulate text in order to aid any TextFilter<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * implementation in its job if needed.<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * <a name="line.10"></a>
+<span class="sourceLineNo">011</span> * @see org.relationlearn.filters.TextFilter<a name="line.11"></a>
+<span class="sourceLineNo">012</span> */<a name="line.12"></a>
+<span class="sourceLineNo">013</span>public class TextUtils {<a name="line.13"></a>
+<span class="sourceLineNo">014</span>    <a name="line.14"></a>
+<span class="sourceLineNo">015</span>    /**<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     * Pattern compiled with the regex "\w+".<a name="line.16"></a>
+<span class="sourceLineNo">017</span>     */<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    public static final Pattern WORDS_PATTERN = Pattern.compile("\\w+");<a name="line.18"></a>
+<span class="sourceLineNo">019</span>    <a name="line.19"></a>
+<span class="sourceLineNo">020</span>    private static final TokenizerFactory TOKENIZER;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    <a name="line.21"></a>
+<span class="sourceLineNo">022</span>    static {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>        TOKENIZER = new RegExTokenizerFactory(WORDS_PATTERN);<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    }<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    <a name="line.25"></a>
+<span class="sourceLineNo">026</span>    private TextUtils() {}<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    <a name="line.27"></a>
+<span class="sourceLineNo">028</span>    /**<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     * Splits a unique String containing a text into and array of Strings<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     * that contain words, using the Java regex {@code \w+}.<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * <a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * @param text the original text to split<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * @return the input text splitted in an more easy to manipulate way for<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * TextFilter implementations<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * <a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * @see org.relationlearn.filters.TextFilter<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static String[] getWordsFromText(String text) {<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        return getTokensFromTextUsingFactory(text, TOKENIZER);<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    <a name="line.41"></a>
+<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * Splits a unique String into tokens using the Pattern provided by <a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * {@code p}.<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * <a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * @param text the original text to tokenize<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * @param p the Patter to use for tokenization<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * @return the input text splitted in tokens using {@code p}<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * <a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * @see Pattern<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public static String[] getTokensFromTextUsingRegex(String text, Pattern p) {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        TokenizerFactory tf = new RegExTokenizerFactory(p);<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        return getTokensFromTextUsingFactory(text, tf);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    <a name="line.56"></a>
+<span class="sourceLineNo">057</span>    /**<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * Splits a unique String into tokens using the TokenizerFactory<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     * {@code factory}.<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     * <a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * @param text the original text to tokenize<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     * @param factory the TokenizerFactory to use for tokenization<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * @return the input text tokenized using the TokenizerFactory <a name="line.63"></a>
+<span class="sourceLineNo">064</span>     * {@code factory}<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     * <a name="line.65"></a>
+<span class="sourceLineNo">066</span>     * @see com.aliasi.tokenizer.TokenizerFactory<a name="line.66"></a>
+<span class="sourceLineNo">067</span>     */<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    public static String[] getTokensFromTextUsingFactory(String text,<a name="line.68"></a>
+<span class="sourceLineNo">069</span>            TokenizerFactory factory) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        char[] ch = text.toCharArray();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        return factory.tokenizer(ch, 0, ch.length).tokenize();<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    }<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>}<a name="line.74"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

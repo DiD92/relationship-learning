@@ -1,3 +1,10 @@
+# Keep track of Javadoc
+!/dist/
+/dist/lib/
+/dist/*
+!/dist/javadoc/
+
+# Class files
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -18,9 +25,10 @@ nbproject
 *.mf
 /build/
 /lib/
-/dist/
 /test_files/
-/src/org/relationlearn/test/
+/src/
+/test/
+/release/
 
 # Model Files
 *.model
