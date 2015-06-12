@@ -1,6 +1,7 @@
 # Keep track of Javadoc
 !/dist/
 /dist/lib/
+/
 /dist/*
 !/dist/javadoc/
 
