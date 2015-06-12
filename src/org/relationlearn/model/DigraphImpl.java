@@ -15,11 +15,11 @@ import org.relationlearn.exception.AlreadyExistingNodeException;
  */
 public class DigraphImpl implements RelationDigraph {
     
-    private Stack<ArgumentNode> treeStack;
+    private ArgumentNode origin;
     
     private class PostorderTreeIterator implements Iterator<ArgumentNode> {
         
-        private ArgumentNode origin;
+        private final Stack<ArgumentNode> treeStack;
         
         public PostorderTreeIterator() {
             treeStack = new Stack<>();
