@@ -1,6 +1,7 @@
 package org.relationlearn.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.relationlearn.classifiers.SVMClassifier;
@@ -17,6 +18,8 @@ import weka.core.Instances;
  * The call parameters are: &lttraining-file&gt &ltfilter-config-path&gt 
  * &ltoutput-path&gt
  * 
+ * @see weka.classifiers.functions.LibSVM
+ * 
  */
 public class ModelGenerator {
     
@@ -32,17 +35,21 @@ public class ModelGenerator {
     private static String inputFile;
     private static String baseConfigPath;
     private static String baseOutPath;
+    private static String[] svmOptions;
     
     private ModelGenerator() {}
     
     public static void main(String args[]) throws Exception {
-        if(args.length != 3) {
+        if(args.length < 3) {
             System.err.println("Error in parameters, usage: "
-                    + "<input-file.xml> <filter-config-path> <output-path>");
+                    + "<input-file.xml> <filter-config-path> <output-path> [<classifier-options>]");
         } else {
             inputFile = args[0];
             baseConfigPath = args[1];
             baseOutPath = args[2];
+            if(args.length > 3) {
+                svmOptions = Arrays.copyOfRange(args, 3, args.length);
+            }
             parser = new XMLFileParser();
             Map<String, RelationDigraph> grahps = parser.parseInput(inputFile);
             String gName;
@@ -55,6 +62,9 @@ public class ModelGenerator {
                     generator = new InstanceGenerator(graph.getValue(), filters);
                     instances = generator.getGraphInstances();
                     classifier = new SVMClassifier();
+                    if(args.length > 3) {
+                        classifier.setOptions(svmOptions);
+                    }
                     classifier.trainClassifier(instances);
                     classifier.storeModel(baseOutPath + gName + ".model");
                 } else {

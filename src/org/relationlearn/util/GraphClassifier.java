@@ -1,6 +1,7 @@
 package org.relationlearn.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 import org.relationlearn.classifiers.SVMClassifier;
 import org.relationlearn.filters.FilterGroup;
@@ -22,6 +23,8 @@ import weka.core.Instances;
  * The call parameters are: &ltinput-file&gt &ltfilter-config-path&gt 
  * &ltmodels-path&gt &ltout-format&gt &ltout-path&gt
  * 
+ * @see weka.classifiers.functions.LibSVM
+ * 
  */
 public class GraphClassifier {
     
@@ -41,21 +44,25 @@ public class GraphClassifier {
     private static String modelsPath;
     private static String outFormat;
     private static String baseOutPath;
+    private static String[] svmOptions;
     
     private static final String attck = RelationType.ATTACK.toString();
     private static final String suppt = RelationType.SUPPORT.toString();
     
     public static void main(String args[]) throws Exception {
-        if(args.length != 5) {
+        if(args.length < 5) {
             System.err.println("Error in parameters, usage: "
                     + "<input-file.xml> <filter-config-path> <models-path> "
-                    + "<-dot|-xml|-dlv> <output-path>");
+                    + "<-dot|-xml|-dlv> <output-path> [<classifier-options>]");
         } else {
             inputFile = args[0];
             baseConfigPath = args[1];
             modelsPath = args[2];
             outFormat = args[3];
             baseOutPath = args[4];
+            if(args.length > 5) {
+                svmOptions = Arrays.copyOfRange(args, 5, args.length);
+            }
             parser = new XMLFileParser();
             Map<String, RelationDigraph> graphs = parser.parseInput(inputFile);
             String gName, sResult;
@@ -74,6 +81,9 @@ public class GraphClassifier {
                     modelFile = new File(modelsPath + gName + ".model");
                     if(modelFile.exists()) {
                         classifier = new SVMClassifier(modelFile);
+                        if(args.length > 5) {
+                            classifier.setOptions(svmOptions);
+                        }
                         i = 0;
                         for(ArgumentNode node : graph.getValue()) {
                             relation = node.getTargetRelation();
